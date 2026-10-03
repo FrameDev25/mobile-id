@@ -1,0 +1,365 @@
+<title>주민등록증 모바일 확인서비스</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --bg: #e8ecf2;
+    --card-bg: #ffffff;
+    --text-primary: #1a1a2e;
+    --text-secondary: #6b7280;
+    --accent: #2b5dae;
+    --accent-dark: #1e3f7a;
+    --timer-track: #e5e7eb;
+    --timer-fill: #2b5dae;
+    --divider: #e5e7eb;
+    color-scheme: light;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .nav-back {
+    font-size: 11px;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-right: -5px;
+  }
+
+  .nav-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: var(--bg);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .gov-logo {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .header-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .menu-icon {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .menu-icon span {
+    display: block;
+    width: 18px;
+    height: 1.5px;
+    background: var(--text-primary);
+    border-radius: 1px;
+  }
+
+  .content {
+    flex: 1;
+    padding: 24px 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .id-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    width: 100%;
+    padding: 32px 24px 0;
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  .photo-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .photo-frame {
+    width: 140px;
+    background: #dfe3ea;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .photo-placeholder {
+    width: 100%;
+    display: block;
+  }
+
+  .info-qr-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .info-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .info-dob {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-top: 2px;
+  }
+
+  .info-address {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  .qr-code {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--divider);
+    margin-bottom: 16px;
+  }
+
+  .timer-section {
+    margin-bottom: 12px;
+  }
+
+  .timer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .timer-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  .timer-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .timer-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--timer-track);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .timer-fill {
+    height: 100%;
+    background: var(--timer-fill);
+    border-radius: 2px;
+    /* no transition — steps discretely */
+  }
+
+  .scan-hint {
+    text-align: center;
+    font-size: 11px;
+    color: #b0b5be;
+    margin-top: 14px;
+    margin-bottom: 20px;
+  }
+
+  .detail-btn {
+    display: block;
+    width: calc(100% + 48px);
+    margin-left: -24px;
+    padding: 18px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 0 0 16px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: -0.01em;
+    transition: background 0.15s;
+  }
+
+  .detail-btn:hover {
+    background: var(--accent-dark);
+  }
+
+  .detail-btn:active {
+    transform: scale(0.98);
+  }
+
+  .bottom-bar {
+    margin-top: auto;
+    height: 40px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, #3CC8E4, #7F5BD6);
+  }
+
+  .marquee-track {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    white-space: nowrap;
+    will-change: transform;
+  }
+
+  .marquee-track span {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 0.02em;
+  }
+</style>
+
+<header class="header">
+  <div class="header-left">
+    <span class="nav-back">&#9664;</span>
+    <span class="nav-title">정부24</span>
+    <img class="gov-logo" src="files/unnamed.webp" alt="정부 로고">
+    <span class="header-title">주민등록증 모바일 확인서비스</span>
+  </div>
+  <div class="menu-icon" role="button" aria-label="메뉴">
+    <span></span><span></span><span></span>
+  </div>
+</header>
+
+<main class="content">
+  <div class="id-card">
+    <div class="photo-section">
+      <div class="photo-frame">
+        <img class="photo-placeholder" src="files/face.jpg" alt="증명사진">
+      </div>
+    </div>
+
+    <div class="info-qr-row">
+      <div class="info-section">
+        <div class="info-name">양서준</div>
+        <div class="info-dob">07.09.04</div>
+        <div class="info-address">파주시 금촌동</div>
+      </div>
+      <img class="qr-code" id="qrImg" src="files/qr1.png" alt="QR코드">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="timer-section">
+      <div class="timer-header">
+        <span class="timer-label">남은시간</span>
+        <span class="timer-value" id="timer">30초</span>
+      </div>
+      <div class="timer-bar">
+        <div class="timer-fill" id="timerFill" style="width: 100%"></div>
+      </div>
+    </div>
+
+    <p class="scan-hint">QR코드를 리더기에 스캔하세요</p>
+
+    <button class="detail-btn" id="detailBtn">상세정보 표시</button>
+  </div>
+</main>
+
+<div class="bottom-bar">
+  <div class="marquee-track" id="marquee"></div>
+</div>
+
+<script>
+  (function() {
+    var total = 30;
+    var remaining = total;
+    var timerEl = document.getElementById('timer');
+    var fillEl = document.getElementById('timerFill');
+    var qrImg = document.getElementById('qrImg');
+    var qrToggle = false;
+
+    setInterval(function() {
+      remaining--;
+      if (remaining < 0) {
+        remaining = total;
+        qrToggle = !qrToggle;
+        qrImg.src = qrToggle ? 'files/qr2.png' : 'files/qr1.png';
+      }
+      timerEl.textContent = remaining + '초';
+      fillEl.style.width = ((remaining / total) * 100) + '%';
+    }, 1000);
+
+    document.getElementById('detailBtn').addEventListener('click', function() {
+      this.textContent = this.textContent === '상세정보 표시' ? '상세정보 숨기기' : '상세정보 표시';
+    });
+
+    var text = '캡쳐방지 시스템이 작동 중입니다.  ';
+    var marquee = document.getElementById('marquee');
+    var chunk = '';
+    for (var i = 0; i < 20; i++) chunk += text;
+    var spanA = document.createElement('span');
+    var spanB = document.createElement('span');
+    spanA.textContent = chunk;
+    spanB.textContent = chunk;
+    marquee.appendChild(spanA);
+    marquee.appendChild(spanB);
+
+    var speed = 28;
+    var pos = 0;
+    var halfWidth = 0;
+    function tick() {
+      if (!halfWidth) halfWidth = spanA.offsetWidth;
+      pos -= speed / 60;
+      if (pos <= -halfWidth) pos += halfWidth;
+      marquee.style.transform = 'translateX(' + pos + 'px)';
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+</script>
